@@ -19,12 +19,12 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 var table = "product";
 
 exports.add = async (params) => {
-     if(params.isDiscount==="true"){
-         params.isDiscount=true
-     }
-     else{
-         params.isDiscount=false;
-     }
+
+  if (params.isDiscount === "true") {
+    params.isDiscount = true;
+  } else if (params.isDiscount === "false") {
+    params.isDiscount = false;
+  }
   const item = {
     TableName: table,
     Item: {
@@ -52,3 +52,106 @@ exports.add = async (params) => {
     };
   }
 };
+
+exports.getAll = async (params) => {
+  const item = {
+    TableName: table,
+  };
+
+  try {
+    const data = await docClient.scan(item).promise();
+    return {
+      status: true,
+      message: "fetched products",
+      data: data,
+    };
+  } catch (err) {
+    return {
+      status: false,
+      message: "error",
+      err,
+    };
+  }
+};
+
+exports.getSingle = async (params) => {
+
+    try{
+        const item ={
+            TableName:table,
+            KeyConditionExpression : 'productID=:productID',
+            ExpressionAttributeValues:{
+                ':productID': params.productID
+            }
+        }
+
+        const data = await docClient.query(item).promise();
+
+        console.log(data);
+        return{
+            data:data
+        }
+
+        
+    }
+    catch(err){
+        console.log(err)
+    }
+
+
+
+//   var item = {
+//     TableName: table,
+
+//     Key: {
+//       productID: params.productID,
+//     },
+//   };
+
+//   try {
+//     const data = await docClient.get(item).promise();
+
+//     return {
+//       status: true,
+//       data: data,
+//     };
+//   } catch (err) {
+//     return {
+//       err,
+//     };
+//   }
+};
+
+
+exports.getDiscount=async(params)=>{
+
+    try{
+        const item ={
+            TableName:table,
+            Key:{
+
+            },
+            FilterExpression: "isDiscount = :isDiscount",
+            
+            ExpressionAttributeValues: {
+                  ":isDiscount": 1
+            }
+        }
+
+        
+
+        const data = await docClient.scan(item).promise();
+
+        console.log(data);
+        return{
+            data:data
+        }
+
+        
+    }
+    catch(err){
+        console.log(err)
+    }
+
+
+}
