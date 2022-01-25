@@ -1,0 +1,21 @@
+const express = require('express');
+const AWS = require('aws-sdk');
+const { v4: uuidv4 } = require('uuid');
+var bodyParser = require('body-parser');
+
+var app = express();
+app.use(bodyParser.json());
+
+const productService = require('../services/productService')
+
+
+exports.addProduct = async(req,res)=>{
+
+    const response = await productService.add(req.body)
+
+    console.log(req.body)
+    console.log(req.body.isDiscount)
+
+    res.send(response);
+
+}
