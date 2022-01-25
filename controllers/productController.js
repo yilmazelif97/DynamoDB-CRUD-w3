@@ -36,3 +36,9 @@ exports.getDiscount = async(req,res)=>{
     const response = await productService.getDiscount();
     res.send(response)
 }
+
+exports.deleteProduct = async(req,res)=>{
+    const response = await productService.delete(req.params);
+    console.log(req.params)
+    res.send(response)
+}

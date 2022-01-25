@@ -19,7 +19,6 @@ var docClient = new AWS.DynamoDB.DocumentClient();
 var table = "product";
 
 exports.add = async (params) => {
-
   if (params.isDiscount === "true") {
     params.isDiscount = true;
   } else if (params.isDiscount === "false") {
@@ -75,83 +74,139 @@ exports.getAll = async (params) => {
 };
 
 exports.getSingle = async (params) => {
+  try {
+    const item = {
+      TableName: table,
+      KeyConditionExpression: "productID=:productID",
+      ExpressionAttributeValues: {
+        ":productID": params.productID,
+      },
+    };
 
-    try{
-        const item ={
-            TableName:table,
-            KeyConditionExpression : 'productID=:productID',
-            ExpressionAttributeValues:{
-                ':productID': params.productID
-            }
-        }
+    const data = await docClient.query(item).promise();
 
-        const data = await docClient.query(item).promise();
+    console.log(data);
+    return {
+      data: data,
+    };
+  } catch (err) {
+    console.log(err);
+  }
 
-        console.log(data);
-        return{
-            data:data
-        }
+  //   var item = {
+  //     TableName: table,
 
-        
-    }
-    catch(err){
-        console.log(err)
-    }
+  //     Key: {
+  //       productID: params.productID,
+  //     },
+  //   };
 
+  //   try {
+  //     const data = await docClient.get(item).promise();
 
-
-//   var item = {
-//     TableName: table,
-
-//     Key: {
-//       productID: params.productID,
-//     },
-//   };
-
-//   try {
-//     const data = await docClient.get(item).promise();
-
-//     return {
-//       status: true,
-//       data: data,
-//     };
-//   } catch (err) {
-//     return {
-//       err,
-//     };
-//   }
+  //     return {
+  //       status: true,
+  //       data: data,
+  //     };
+  //   } catch (err) {
+  //     return {
+  //       err,
+  //     };
+  //   }
 };
 
+exports.getDiscount = async (params) => {
+  try {
+    const item = {
+      TableName: table,
+      Key: {},
+      FilterExpression: "isDiscount = :isDiscount",
 
-exports.getDiscount=async(params)=>{
+      ExpressionAttributeValues: {
+        ":isDiscount": 1,
+      },
+    };
 
-    try{
-        const item ={
-            TableName:table,
-            Key:{
 
-            },
-            FilterExpression: "isDiscount = :isDiscount",
+    const data = await docClient.scan(item).promise();
+
+    console.log(data);
+    return {
+      data: data,
+    };
+  } catch (err) {
+    console.log(err);
+  }
+};
+
+//önce şartı sağlayan veriyi çok sonra sil
+
+exports.delete = async(params)=>{
+
+
+    try {
+        const item = {
+          TableName: table,
+          KeyConditionExpression: "productID=:productID",
+          ExpressionAttributeValues: {
+            ":productID": params.productID,
+          },
+         
+        };
+    
+        const data = await docClient.query(item).promise();
+
+        if(data){
             
-            ExpressionAttributeValues: {
-                  ":isDiscount": 1
-            }
+            const d = {
+                TableName: table,
+                Key:{
+                    productID:params.productID,
+                    
+                },
+               
+                ConditionExpression: "isDiscount = :isDiscount",
+                ExpressionAttributeValues: {
+                   ":isDiscount": 1,
+                 },
+              };
+              await docClient.delete(d).promise()
         }
-
-        
-
-        const data = await docClient.scan(item).promise();
-
+      
+    
         console.log(data);
-        return{
-            data:data
-        }
+        return {
+          data: data,
+        };
+      } catch (err) {
+        console.log(err);
+      }
+
+    // const item={
+    //     TableName:table,
+    //      Key:{
+    //          productID : params.productID,
+    //      },
 
         
-    }
-    catch(err){
-        console.log(err)
-    }
+    //     ConditionExpression: "isDiscount = :isDiscount",
+    //     ExpressionAttributeValues: {
+    //         ":isDiscount": 1,
+    //       },
+        
+    // }
 
+    // try {
+    //     const deneme=await docClient.delete(item).promise()
+    //     return {
+    //       status: true,
+    //       message:"product is deleted"
+    //     };
+    //   } catch (err) {
+    //     return {
+    //         status:false,
+    //         message:err
+    //     }
+    //   }
 
 }
