@@ -127,7 +127,6 @@ exports.getDiscount = async (params) => {
       },
     };
 
-
     const data = await docClient.scan(item).promise();
 
     console.log(data);
@@ -139,14 +138,9 @@ exports.getDiscount = async (params) => {
   }
 };
 
-
-
-
-
 //önce şartı sağlayan veriyi çok sonra sil
 
-exports.delete = async(params)=>{
-
+exports.delete = async (params) => {
   var deletedID = params.productID;
 
   var item = {
@@ -155,48 +149,57 @@ exports.delete = async(params)=>{
       productID: deletedID,
     },
     ConditionExpression: "isDiscount = :isDiscount",
-     ExpressionAttributeValues: {
-            ":isDiscount": 0,
-      },
+    ExpressionAttributeValues: {
+      ":isDiscount": 0,
+    },
   };
 
   try {
     await docClient.delete(item).promise();
     return {
       status: true,
-      message:"post is deleted"
+      message: "post is deleted",
+    };
+  } catch (err) {
+    return {
+      status: false,
+      message: "it has discount, you cant delete",
+    };
+  }
+};
+
+
+
+exports.update = async (params) => {
+
+  var newStock = params.stock;
+
+  //console.log(newStock)
+  console.log(params)
+
+  var item = {
+    TableName: table,
+    Key:{
+      productID : params.productID
+    },
+    UpdateExpression: "set stock = :r",
+    ExpressionAttributeValues: {
+      //":r":"elif" --> static
+      ":r": newStock,
+    },
+    ReturnValues: "UPDATED_NEW",
+  };
+
+  try {
+    await docClient.update(item).promise();
+    return {
+      status: true,
+      message:"post is updated"
     };
   } catch (err) {
     return {
         status:false,
-        message:"it has discount, you cant delete"
+        message:err
     }
   }
-}
-    // const item={
-    //     TableName:table,
-    //      Key:{
-    //          productID : params.productID,
-    //      },
-
-        
-    //     ConditionExpression: "isDiscount = :isDiscount",
-    //     ExpressionAttributeValues: {
-    //         ":isDiscount": 1,
-    //       },
-        
-    // }
-
-    // try {
-    //     const deneme=await docClient.delete(item).promise()
-    //     return {
-    //       status: true,
-    //       message:"product is deleted"
-    //     };
-    //   } catch (err) {
-    //     return {
-    //         status:false,
-    //         message:err
-    //     }
-    //   }
-
+};

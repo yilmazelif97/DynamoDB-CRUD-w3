@@ -42,3 +42,8 @@ exports.deleteProduct = async(req,res)=>{
     console.log(req.params)
     res.send(response)
 }
+
+exports.updateProduct = async(req,res)=>{
+  const response = await productService.update(req.body);
+  res.send(response)
+}
