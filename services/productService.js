@@ -139,49 +139,40 @@ exports.getDiscount = async (params) => {
   }
 };
 
+
+
+
+
 //önce şartı sağlayan veriyi çok sonra sil
 
 exports.delete = async(params)=>{
 
+  var deletedID = params.productID;
 
-    try {
-        const item = {
-          TableName: table,
-          KeyConditionExpression: "productID=:productID",
-          ExpressionAttributeValues: {
-            ":productID": params.productID,
-          },
-         
-        };
-    
-        const data = await docClient.query(item).promise();
+  var item = {
+    TableName: table,
+    Key: {
+      productID: deletedID,
+    },
+    ConditionExpression: "isDiscount = :isDiscount",
+     ExpressionAttributeValues: {
+            ":isDiscount": 0,
+      },
+  };
 
-        if(data){
-            
-            const d = {
-                TableName: table,
-                Key:{
-                    productID:params.productID,
-                    
-                },
-               
-                ConditionExpression: "isDiscount = :isDiscount",
-                ExpressionAttributeValues: {
-                   ":isDiscount": 1,
-                 },
-              };
-              await docClient.delete(d).promise()
-        }
-      
-    
-        console.log(data);
-        return {
-          data: data,
-        };
-      } catch (err) {
-        console.log(err);
-      }
-
+  try {
+    await docClient.delete(item).promise();
+    return {
+      status: true,
+      message:"post is deleted"
+    };
+  } catch (err) {
+    return {
+        status:false,
+        message:"it has discount, you cant delete"
+    }
+  }
+}
     // const item={
     //     TableName:table,
     //      Key:{
@@ -209,4 +200,3 @@ exports.delete = async(params)=>{
     //     }
     //   }
 
-}
