@@ -32,7 +32,7 @@ exports.add = async (params) => {
       productName: params.productName,
       isDiscount: params.isDiscount,
       category: {
-        categoryId: Math.random(),
+        categoryId: uuidv4(),
         categoryName: params.categoryName,
       },
     },
