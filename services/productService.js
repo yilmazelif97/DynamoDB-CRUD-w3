@@ -30,7 +30,7 @@ exports.add = async (params) => {
       productID: uuidv4(),
       stock: params.stock,
       productName: params.productName,
-      isDiscount: Number(params.isDiscount),
+      isDiscount: params.isDiscount,
       category: {
         categoryId: Math.random(),
         categoryName: params.categoryName,
@@ -123,7 +123,7 @@ exports.getDiscount = async (params) => {
       FilterExpression: "isDiscount = :isDiscount",
 
       ExpressionAttributeValues: {
-        ":isDiscount": 1,
+        ":isDiscount": false,
       },
     };
 
@@ -150,7 +150,7 @@ exports.delete = async (params) => {
     },
     ConditionExpression: "isDiscount = :isDiscount",
     ExpressionAttributeValues: {
-      ":isDiscount": 0,
+      ":isDiscount": false, 
     },
   };
 
@@ -168,19 +168,16 @@ exports.delete = async (params) => {
   }
 };
 
-
-
 exports.update = async (params) => {
-
   var newStock = params.stock;
 
   //console.log(newStock)
-  console.log(params)
+  console.log(params);
 
   var item = {
     TableName: table,
-    Key:{
-      productID : params.productID
+    Key: {
+      productID: params.productID,
     },
     UpdateExpression: "set stock = :r",
     ExpressionAttributeValues: {
@@ -194,12 +191,12 @@ exports.update = async (params) => {
     await docClient.update(item).promise();
     return {
       status: true,
-      message:"post is updated"
+      message: "post is updated",
     };
   } catch (err) {
     return {
-        status:false,
-        message:err
-    }
+      status: false,
+      message: err,
+    };
   }
 };
