@@ -7,6 +7,7 @@ const app = express();
 
 app.use(bodyParser.json())
 
+//Yönlendirme
 
 var router = Router();
 

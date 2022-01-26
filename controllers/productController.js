@@ -8,6 +8,8 @@ app.use(bodyParser.json());
 
 const productService = require("../services/productService");
 
+//service ve frontend(postman)den gelen istek-cevapların buluştuğu endpointler
+
 exports.addProduct = async (req, res) => {
   const response = await productService.add(req.body);
 

@@ -73,6 +73,7 @@ exports.getAll = async (params) => {
   }
 };
 
+//Partition key e göre get işlemi yapar.
 exports.getSingle = async (params) => {
   try {
     const item = {
@@ -93,28 +94,10 @@ exports.getSingle = async (params) => {
     console.log(err);
   }
 
-  //   var item = {
-  //     TableName: table,
-
-  //     Key: {
-  //       productID: params.productID,
-  //     },
-  //   };
-
-  //   try {
-  //     const data = await docClient.get(item).promise();
-
-  //     return {
-  //       status: true,
-  //       data: data,
-  //     };
-  //   } catch (err) {
-  //     return {
-  //       err,
-  //     };
-  //   }
+  
 };
 
+//isDiscount=true olan verileri çeker
 exports.getDiscount = async (params) => {
   try {
     const item = {
@@ -138,7 +121,7 @@ exports.getDiscount = async (params) => {
   }
 };
 
-//önce şartı sağlayan veriyi çok sonra sil
+//ConditionExpress sağlanıyorsa delete işlemi olur. isdiscount false olanlar silinir
 
 exports.delete = async (params) => {
   var deletedID = params.productID;
