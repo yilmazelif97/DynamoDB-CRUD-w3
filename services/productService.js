@@ -9,6 +9,7 @@ app.use(bodyParser.json());
 
 AWS.config.update({
   region: "us-east-1",
+  //güvenlikten dolayı keyler silindi
   accessKeyId: "",
   secretAccessKey: "",
   endpoint: "http://dynamodb.us-east-1.amazonaws.com",
@@ -121,7 +122,7 @@ exports.getDiscount = async (params) => {
   }
 };
 
-//ConditionExpress sağlanıyorsa delete işlemi olur. isdiscount false olanlar silinir
+//ConditionExpress sağlanıyorsa delete işlemi olur. isdiscount false olanlar silin
 
 exports.delete = async (params) => {
   var deletedID = params.productID;
