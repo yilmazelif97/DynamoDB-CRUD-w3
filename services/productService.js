@@ -107,7 +107,7 @@ exports.getDiscount = async (params) => {
       FilterExpression: "isDiscount = :isDiscount",
 
       ExpressionAttributeValues: {
-        ":isDiscount": false,
+        ":isDiscount": true,
       },
     };
 
